@@ -7,7 +7,46 @@
     margin-bottom: 32px;
     border-bottom: 1px solid var(--border);
     padding-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
 }
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.user-info {
+    text-align: right;
+}
+
+.user-name {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.logout-button {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.logout-button:hover {
+    background: hsla(0, 100%, 70%, 0.1);
+    color: hsl(0, 100%, 75%);
+    border-color: hsla(0, 100%, 70%, 0.2);
+}
+
 
 .home-title {
     font-size: 1.85rem;

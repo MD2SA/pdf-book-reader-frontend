@@ -1,0 +1,333 @@
+---
+openapi: 3.1.0
+components:
+  schemas:
+    AuthResponse:
+      type: object
+      description: Authentication response returned after register or login.
+      properties:
+        token:
+          type: string
+          examples:
+          - eyJhbGciOiJSUzI1NiJ9...
+          description: Signed JWT bearer token.
+        username:
+          type: string
+          examples:
+          - manuel
+          description: Authenticated username.
+        email:
+          type: string
+          examples:
+          - manuel@example.com
+          description: Authenticated email.
+    Book:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        bookReference:
+          type: string
+        lastPageRead:
+          type: integer
+          format: int32
+        lastTimeRead:
+          $ref: "#/components/schemas/LocalDateTime"
+        favorite:
+          type: boolean
+        user:
+          $ref: "#/components/schemas/User"
+    BookDTO:
+      type: object
+      description: Book data returned by the API.
+      properties:
+        id:
+          type: integer
+          format: int64
+          examples:
+          - 1
+          description: Book identifier.
+        title:
+          type: string
+          examples:
+          - Clean Code
+          description: Display title of the book.
+        bookReference:
+          type: string
+          examples:
+          - /books/clean-code.pdf
+          description: Book file path or remote URL.
+        lastPageRead:
+          type: integer
+          format: int32
+          examples:
+          - 42
+          description: Last page read by the user.
+        lastTimeRead:
+          $ref: "#/components/schemas/LocalDateTime"
+          type: string
+          examples:
+          - 2026-03-25T20:15:30
+          description: Timestamp of the latest reading session.
+        favorite:
+          type: boolean
+          examples:
+          - true
+          description: Indicates whether the book is marked as favorite.
+    LocalDateTime:
+      type: string
+      format: date-time
+    LoginRequest:
+      type: object
+      required:
+      - username
+      - password
+      description: Payload used to authenticate a user.
+      properties:
+        username:
+          type: string
+          examples:
+          - manuel
+          pattern: \S
+          description: Unique username used during login.
+        password:
+          type: string
+          examples:
+          - secret123
+          pattern: \S
+          description: Raw password for the user account.
+    RegisterRequest:
+      type: object
+      required:
+      - username
+      - email
+      - password
+      description: Payload used to register a new user.
+      properties:
+        username:
+          type: string
+          minLength: 3
+          examples:
+          - manuel
+          maxLength: 50
+          pattern: \S
+          description: Unique username for the new account.
+        email:
+          type: string
+          examples:
+          - manuel@example.com
+          pattern: \S
+          description: Email address of the new user.
+        password:
+          type: string
+          minLength: 6
+          examples:
+          - secret123
+          pattern: \S
+          description: Password for the new account.
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        books:
+          type: array
+          items:
+            $ref: "#/components/schemas/Book"
+  securitySchemes:
+    SecurityScheme:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Authentication
+tags:
+- name: Authentication
+  description: Endpoints for account creation and login.
+- name: Books
+  description: Endpoints for managing the authenticated user's books.
+paths:
+  /api/auth/login:
+    post:
+      summary: Authenticate an existing user
+      description: Validates credentials and returns a JWT bearer token.
+      tags:
+      - Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+        required: true
+      responses:
+        "200":
+          description: Authentication succeeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+        "400":
+          description: Bad Request
+  /api/auth/register:
+    post:
+      summary: Register a new user
+      description: Creates a new user account and returns a JWT for immediate authenticated
+        access.
+      tags:
+      - Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+        required: true
+      responses:
+        "201":
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "409":
+          description: Username or email already exists
+          content:
+            text/plain:
+              schema:
+                type: string
+        "400":
+          description: Bad Request
+  /api/books:
+    get:
+      summary: List the authenticated user's books
+      description: Returns every book associated with the JWT subject.
+      tags:
+      - Books
+      responses:
+        "200":
+          description: Books retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BookDTO"
+      security:
+      - bearerAuth: []
+    post:
+      summary: Create a new book
+      description: Adds a book to the authenticated user's library.
+      tags:
+      - Books
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Book"
+        required: true
+      responses:
+        "201":
+          description: Book created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookDTO"
+        "400":
+          description: Invalid request payload
+        "401":
+          description: Missing or invalid JWT
+      security:
+      - bearerAuth: []
+  /api/books/{id}:
+    delete:
+      summary: Delete a book
+      description: Removes a book from the authenticated user's library.
+      tags:
+      - Books
+      parameters:
+      - description: Book identifier
+        required: true
+        name: id
+        in: path
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: Book deleted successfully
+        "404":
+          description: Book not found for this user
+      security:
+      - bearerAuth: []
+  /api/books/{id}/favorite:
+    patch:
+      summary: Toggle favorite
+      description: Marks a book as favorite or removes it from favorites.
+      tags:
+      - Books
+      parameters:
+      - description: Book identifier
+        required: true
+        name: id
+        in: path
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Favorite flag updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookDTO"
+        "404":
+          description: Book not found for this user
+      security:
+      - bearerAuth: []
+  /api/books/{id}/progress:
+    patch:
+      summary: Update reading progress
+      description: Updates the last page read and the last time read for a book owned
+        by the authenticated user.
+      tags:
+      - Books
+      parameters:
+      - description: Book identifier
+        required: true
+        name: id
+        in: path
+        schema:
+          type: integer
+          format: int64
+      - description: Last page read
+        example: 42
+        required: true
+        name: page
+        in: query
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: Progress updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookDTO"
+        "404":
+          description: Book not found for this user
+      security:
+      - bearerAuth: []
+info:
+  title: pdf-book-reader-backend API
+  version: 1.0.0-SNAPSHOT

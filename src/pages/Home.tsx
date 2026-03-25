@@ -2,21 +2,30 @@ import { useEffect, useState } from "react"
 import type { Book } from "../types/Books";
 import BookCard from "../components/BookCard";
 import "./Home.css";
-import { books as fakeBooks } from "../assets/test-data";
+import { api } from "../services/api";
+import { useAuth } from "../context/AuthContext";
 
 export default function Home() {
-    const [books, setBooks] = useState<Book[]>(fakeBooks);
+    const [books, setBooks] = useState<Book[]>([]);
+    const [error, setError] = useState<string | null>(null);
+    const { user, logout } = useAuth();
 
     useEffect(() => {
-        fetch("http://localhost:8080/api/books")
-            .then(res => res.json())
+        api.get("/books")
+            .then(res => {
+                if (!res.ok) throw new Error("Failed to fetch books");
+                return res.json();
+            })
             .then(data => {
                 const sorted = [...data].sort((a, b) =>
-                    new Date(b.lastRead).getTime() - new Date(a.lastRead).getTime()
+                    new Date(b.lastRead || 0).getTime() - new Date(a.lastRead || 0).getTime()
                 );
                 setBooks(sorted);
             })
-            .catch(err => console.error("Failed to load books:", err));
+            .catch(err => {
+                console.error("Failed to load books:", err);
+                setError("Unable to load your library. Please try again later.");
+            });
     }, []);
 
     const featuredBook = books[0];
@@ -25,11 +34,24 @@ export default function Home() {
     return (
         <div className="container home-container fade-in">
             <header className="home-header">
-                <h1 className="home-title">PDF Book Reader</h1>
-                <p className="home-subtitle">Digital Library System</p>
+                <div>
+                    <h1 className="home-title">PDF Book Reader</h1>
+                    <p className="home-subtitle">Digital Library System</p>
+                </div>
+                
+                <div className="user-profile">
+                    <div className="user-info">
+                        <span className="user-name">{user?.username}</span>
+                    </div>
+                    <button className="logout-button" onClick={logout}>
+                        Sign Out
+                    </button>
+                </div>
             </header>
 
             <main>
+                {error && <div className="error-message">{error}</div>}
+                
                 <section className="section-margin">
                     <div className="section-header">
                         <h2 className="section-label">Current Reading</h2>
@@ -40,7 +62,7 @@ export default function Home() {
                         </div>
                     ) : (
                         <div className="empty-state">
-                            No active books in repository.
+                            {error ? "Error loading repository." : "No active books in repository."}
                         </div>
                     )}
                 </section>
@@ -61,3 +83,4 @@ export default function Home() {
         </div>
     )
 }
+
