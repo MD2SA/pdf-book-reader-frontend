@@ -1,0 +1,113 @@
+.home-container {
+    padding-top: 24px;
+    padding-bottom: 60px;
+}
+
+.home-header {
+    margin-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 24px;
+}
+
+.home-title {
+    font-size: 1.85rem;
+    margin-bottom: 4px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+}
+
+.home-subtitle {
+    color: var(--text-dim);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.section-margin {
+    margin-bottom: 48px;
+}
+
+.section-header {
+    margin-bottom: 16px;
+}
+
+.section-label {
+    font-size: 0.65rem;
+    color: var(--text-dim);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.featured-card {
+    padding: 24px;
+    background: linear-gradient(135deg, #0a0a0a 0%, #050505 100%);
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-dim);
+    background: var(--bg-offset);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    font-size: 0.8rem;
+}
+
+.books-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+}
+
+.grid-item {
+    transition: var(--transition);
+}
+
+@media (max-width: 600px) {
+    .home-container {
+        padding-top: 16px;
+        padding-bottom: 24px;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .home-header {
+        margin-bottom: 16px;
+        padding-bottom: 0px;
+        border-bottom: none;
+    }
+
+    .home-subtitle {
+        display: none; /* Hide subtitle to save vertical space */
+    }
+
+    .home-title {
+        font-size: 1.25rem;
+    }
+
+    .section-margin {
+        margin-bottom: 20px;
+    }
+
+    .section-header {
+        margin-bottom: 8px;
+    }
+
+    .section-label {
+        font-size: 0.6rem;
+    }
+
+    .featured-card {
+        padding: 12px;
+    }
+
+    .books-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+}
