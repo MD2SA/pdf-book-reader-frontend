@@ -1,1 +1,1 @@
-export { ReaderWrapper } from './ReaderWrapper';
+export { PdfReader } from './PdfReader';

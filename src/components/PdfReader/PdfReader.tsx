@@ -4,7 +4,7 @@ import { useReader } from '../ReaderContext';
 import { ReaderMenu } from '../ReaderMenu';
 import styles from './PdfReader.module.css';
 
-export default function PdfReader({ title }: { title: string }) {
+export function PdfReader({ title }: { title: string }) {
     const { nextPage, prevPage, isLoading } = useReader();
 
     if (isLoading) {

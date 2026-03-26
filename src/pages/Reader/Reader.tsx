@@ -3,7 +3,7 @@ import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { useBookStorage } from "../../hooks/useBookStorage";
 import { Loading } from "../../components/Loading";
 import { ReaderProvider } from "../../components/ReaderContext";
-import PdfReader from "../../components/PdfReader/PdfReader";
+import { PdfReader } from "../../components/PdfReader/PdfReader";
 import type { Book } from "../../types/book";
 
 export function Reader() {

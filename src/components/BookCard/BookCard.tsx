@@ -25,9 +25,9 @@ export function BookCard({ book, isFeatured = false }: BookCardProps) {
                 <h3 className={styles.title} title={book.title}>{book.title}</h3>
                 <div className={styles.metaGroup}>
                     <p className={styles.meta}>
-                        Read: {new Date(book.lastRead).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                        Read: {new Date(book.lastTimeRead).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                     </p>
-                    <p className={styles.meta}>Page {book.lastPage}</p>
+                    <p className={styles.meta}>Page {book.lastPageRead}</p>
                 </div>
                 <button
                     className={styles.continueBtn}
