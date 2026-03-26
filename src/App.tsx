@@ -1,11 +1,10 @@
-import { BrowserRouter as Router, Routes, Route, useParams, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
-import { PdfReader } from './components/PdfReader';
-import { books } from './assets/test-data';
 import Login from './pages/Login';
 import { Register } from './pages/Register';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
+import { Reader } from './pages/Reader';
 
 export default function App() {
     return (
@@ -19,7 +18,7 @@ export default function App() {
                     {/* Protected Routes */}
                     <Route element={<ProtectedRoute />}>
                         <Route path="/" element={<Home />} />
-                        <Route path="/reader/:id" element={<ReaderWrapper />} />
+                        <Route path="/reader/:id" element={<Reader />} />
                     </Route>
 
                     <Route path="*" element={<Navigate to="/" replace />} />
@@ -28,11 +27,3 @@ export default function App() {
         </AuthProvider>
     );
 }
-
-function ReaderWrapper() {
-    const { id } = useParams();
-    const book = books.find((b) => b.id === Number(id)) || books[0];
-
-    return <PdfReader file={book.uri} />;
-}
-

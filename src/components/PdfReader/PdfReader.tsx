@@ -1,14 +1,15 @@
+import { Loading } from '../Loading';
 import { PdfViewer } from '../PdfViewer';
-import { ReaderProvider, useReader } from '../ReaderContext';
+import { useReader } from '../ReaderContext';
 import { ReaderMenu } from '../ReaderMenu';
 import styles from './PdfReader.module.css';
 
-interface PdfReaderProps {
-    file: string;
-}
+export default function PdfReader({ title }: { title: string }) {
+    const { nextPage, prevPage, isLoading } = useReader();
 
-function InnerReader() {
-    const { nextPage, prevPage } = useReader();
+    if (isLoading) {
+        return <Loading message={`Opening ${title}...`} />;
+    }
 
     const handleNavigationClick = (e: React.MouseEvent) => {
         const { clientX } = e;
@@ -25,13 +26,5 @@ function InnerReader() {
             <ReaderMenu />
             <PdfViewer />
         </div>
-    );
-}
-
-export function PdfReader({ file }: PdfReaderProps) {
-    return (
-        <ReaderProvider file={file}>
-            <InnerReader />
-        </ReaderProvider>
     );
 }

@@ -5,12 +5,12 @@ import usePdf from '../../hooks/usePdf';
 const ReaderContext = createContext<ReaderContextType | null>(null);
 
 interface ReaderProviderProps {
-    file: string;
+    file: Uint8Array;
     children: React.ReactNode;
 }
 
 export function ReaderProvider({ file, children }: ReaderProviderProps) {
-    const { pdf, numPages } = usePdf(file);
+    const { pdf, numPages, isLoading } = usePdf(file);
     const [page, setPage] = useState<number>(1);
 
     const nextPage = () => {
@@ -22,7 +22,7 @@ export function ReaderProvider({ file, children }: ReaderProviderProps) {
     };
 
     return (
-        <ReaderContext.Provider value={{ pdf, numPages, page, setPage, nextPage, prevPage }}>
+        <ReaderContext.Provider value={{ pdf, numPages, page, setPage, nextPage, prevPage, isLoading }}>
             {children}
         </ReaderContext.Provider>
     );

@@ -31,7 +31,7 @@ export function BookCard({ book, isFeatured = false }: BookCardProps) {
                 </div>
                 <button
                     className={styles.continueBtn}
-                    onClick={() => navigate(`/reader/${book.id}`)}
+                    onClick={() => navigate(`/reader/${book.id}`, { state: { book } })}
                 >
                     {isFeatured ? 'Continue Reading' : 'Continue'}
                 </button>
