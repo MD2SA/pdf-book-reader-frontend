@@ -18,29 +18,56 @@ export default function usePdf(data: Uint8Array | null): UsePdfResult {
 
     useEffect(() => {
         if (!data || data.length === 0) return;
+        let cancelled = false;
 
         const loadPdf = async () => {
             setIsLoading(true);
             try {
+
+                const copy: ArrayBuffer = data.slice().buffer;
+
                 const loadingTask = pdfjsLib.getDocument({
-                    data: data.slice(0)
+                    data: copy,
+                    disableAutoFetch: false,
+                    disableStream: false,
                 });
 
                 const pdfDoc = await loadingTask.promise
-                setPdf(pdfDoc)
+                if (cancelled) {
+                    pdfDoc.destroy();
+                    return;
+                }
+                setPdf(prev => {
+                    prev?.destroy();
+                    return pdfDoc;
+                })
                 setNumPages(pdfDoc.numPages)
+
             } catch (error: any) {
+
+                if (cancelled) return;
                 if (error?.name === 'RenderingCancelledException') return;
                 console.error("Render error:", error);
                 setPdf(null)
                 setNumPages(0)
+
             } finally {
-                setIsLoading(false);
+                if (!cancelled) setIsLoading(false);
             }
         }
 
         loadPdf()
+
+        return () => {
+            cancelled = true;
+        }
     }, [data])
+
+    useEffect(() => {
+        return () => {
+            pdf?.destroy();
+        }
+    }, [pdf])
 
     return { pdf, numPages, isLoading }
 }
