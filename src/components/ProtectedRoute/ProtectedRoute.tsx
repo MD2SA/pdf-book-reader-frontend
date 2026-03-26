@@ -8,7 +8,7 @@ export function ProtectedRoute() {
         return <div>Loading authentication...</div>;
     }
 
-    if (!token) {
+    if (!import.meta.env.DEV && !token) {
         return <Navigate to="/login" replace />;
     }
 
