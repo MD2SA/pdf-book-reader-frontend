@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import '../Login/Login.module.css';
+import styles from '../Login/Login.module.css';
 
 export function Register() {
     const [username, setUsername] = useState('');
@@ -28,21 +28,21 @@ export function Register() {
     };
 
     return (
-        <div className="auth-container">
-            <div className="auth-card">
+        <div className={styles.authContainer}>
+            <div className={styles.authCard}>
                 <header>
-                    <h1 className="auth-title">Get Started</h1>
-                    <p className="auth-subtitle">Create your personal library of PDF books.</p>
+                    <h1 className={styles.authTitle}>Get Started</h1>
+                    <p className={styles.authSubtitle}>Create your personal library of PDF books.</p>
                 </header>
 
-                {error && <div className="error-message">{error}</div>}
+                {error && <div className={styles.errorMessage}>{error}</div>}
 
-                <form className="auth-form" onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label className="form-label" htmlFor="username">Username</label>
+                <form className={styles.authForm} onSubmit={handleSubmit}>
+                    <div className={styles.formGroup}>
+                        <label className={styles.formLabel} htmlFor="username">Username</label>
                         <input
                             id="username"
-                            className="form-input"
+                            className={styles.formInput}
                             type="text"
                             placeholder="Pick a unique username"
                             value={username}
@@ -51,11 +51,11 @@ export function Register() {
                         />
                     </div>
 
-                    <div className="form-group">
-                        <label className="form-label" htmlFor="email">Email Address</label>
+                    <div className={styles.formGroup}>
+                        <label className={styles.formLabel} htmlFor="email">Email Address</label>
                         <input
                             id="email"
-                            className="form-input"
+                            className={styles.formInput}
                             type="email"
                             placeholder="you@example.com"
                             value={email}
@@ -64,11 +64,11 @@ export function Register() {
                         />
                     </div>
 
-                    <div className="form-group">
-                        <label className="form-label" htmlFor="password">Password</label>
+                    <div className={styles.formGroup}>
+                        <label className={styles.formLabel} htmlFor="password">Password</label>
                         <input
                             id="password"
-                            className="form-input"
+                            className={styles.formInput}
                             type="password"
                             placeholder="Choose a strong password"
                             value={password}
@@ -78,7 +78,7 @@ export function Register() {
                     </div>
 
                     <button
-                        className="auth-button"
+                        className={styles.authButton}
                         type="submit"
                         disabled={isSubmitting}
                     >
@@ -86,9 +86,9 @@ export function Register() {
                     </button>
                 </form>
 
-                <div className="auth-footer">
+                <div className={styles.authFooter}>
                     <span>Already have an account?</span>
-                    <Link to="/login" className="auth-link">Sign In</Link>
+                    <Link to="/login" className={styles.authLink}>Sign In</Link>
                 </div>
             </div>
         </div>
