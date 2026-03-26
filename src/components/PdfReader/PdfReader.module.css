@@ -1,0 +1,27 @@
+.reader {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #000;
+    position: relative;
+    overflow: hidden;
+}
+
+.pageContainer {
+    flex: 1;
+    width: 100%;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+    padding: 32px 20px;
+}
+
+.pageContainer canvas {
+    max-width: 100%;
+    height: auto !important;
+    border-radius: var(--radius);
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8), 0 0 1px rgba(255, 255, 255, 0.1);
+    background: white;
+}

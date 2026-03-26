@@ -1,9 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import type { AuthUser, AuthContextType, LoginRequest, RegisterRequest, AuthResponse } from '../types/auth';
+import type { AuthUser, AuthContextType, LoginRequest, RegisterRequest } from '../types/auth';
+import { loginUser, registerUser } from '../services/authService';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-const API_BASE_URL = 'http://localhost:8080/api';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [user, setUser] = useState<AuthUser | null>(null);
@@ -18,42 +17,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setLoading(false);
     }, [token]);
 
+    const persistSession = (authToken: string, authUser: AuthUser) => {
+        setToken(authToken);
+        setUser(authUser);
+        localStorage.setItem('token', authToken);
+        localStorage.setItem('user', JSON.stringify(authUser));
+    };
+
     const login = async (credentials: LoginRequest) => {
-        const response = await fetch(`${API_BASE_URL}/auth/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(credentials),
-        });
-
-        if (!response.ok) {
-            const error = await response.text();
-            throw new Error(error || 'Login failed');
-        }
-
-        const data: AuthResponse = await response.json();
-        setToken(data.token);
-        setUser({ username: data.username, email: data.email });
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify({ username: data.username, email: data.email }));
+        const data = await loginUser(credentials);
+        persistSession(data.token, { username: data.username, email: data.email });
     };
 
     const register = async (credentials: RegisterRequest) => {
-        const response = await fetch(`${API_BASE_URL}/auth/register`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(credentials),
-        });
-
-        if (!response.ok) {
-            const error = await response.text();
-            throw new Error(error || 'Registration failed');
-        }
-
-        const data: AuthResponse = await response.json();
-        setToken(data.token);
-        setUser({ username: data.username, email: data.email });
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify({ username: data.username, email: data.email }));
+        const data = await registerUser(credentials);
+        persistSession(data.token, { username: data.username, email: data.email });
     };
 
     const logout = () => {

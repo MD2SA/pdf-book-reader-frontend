@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import './Auth.css';
+import { useAuth } from '../../context/AuthContext';
+import '../Login/Login.module.css';
 
-const Login: React.FC = () => {
+export function Register() {
     const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const { login } = useAuth();
+    const { register } = useAuth();
     const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -17,10 +18,10 @@ const Login: React.FC = () => {
         setIsSubmitting(true);
 
         try {
-            await login({ username, password });
+            await register({ username, email, password });
             navigate('/', { replace: true });
         } catch (err: any) {
-            setError(err.message || 'Login failed. Check your credentials.');
+            setError(err.message || 'Registration failed. Try again.');
         } finally {
             setIsSubmitting(false);
         }
@@ -30,8 +31,8 @@ const Login: React.FC = () => {
         <div className="auth-container">
             <div className="auth-card">
                 <header>
-                    <h1 className="auth-title">Welcome Back</h1>
-                    <p className="auth-subtitle">Continue your reading journey where you left off.</p>
+                    <h1 className="auth-title">Get Started</h1>
+                    <p className="auth-subtitle">Create your personal library of PDF books.</p>
                 </header>
 
                 {error && <div className="error-message">{error}</div>}
@@ -43,9 +44,22 @@ const Login: React.FC = () => {
                             id="username"
                             className="form-input"
                             type="text"
-                            placeholder="Enter your username"
+                            placeholder="Pick a unique username"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label className="form-label" htmlFor="email">Email Address</label>
+                        <input
+                            id="email"
+                            className="form-input"
+                            type="email"
+                            placeholder="you@example.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             required
                         />
                     </div>
@@ -56,7 +70,7 @@ const Login: React.FC = () => {
                             id="password"
                             className="form-input"
                             type="password"
-                            placeholder="••••••••"
+                            placeholder="Choose a strong password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
@@ -68,17 +82,15 @@ const Login: React.FC = () => {
                         type="submit"
                         disabled={isSubmitting}
                     >
-                        {isSubmitting ? 'Authenticating...' : 'Sign In'}
+                        {isSubmitting ? 'Creating Account...' : 'Sign Up'}
                     </button>
                 </form>
 
                 <div className="auth-footer">
-                    <span>Don't have an account?</span>
-                    <Link to="/register" className="auth-link">Create Account</Link>
+                    <span>Already have an account?</span>
+                    <Link to="/login" className="auth-link">Sign In</Link>
                 </div>
             </div>
         </div>
     );
 };
-
-export default Login;

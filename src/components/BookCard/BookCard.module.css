@@ -1,0 +1,162 @@
+.bookCard {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    height: 100%;
+}
+
+.bookCard.featured {
+    flex-direction: row;
+    align-items: center;
+    gap: 24px;
+}
+
+.coverContainer {
+    aspect-ratio: 2/3;
+    width: 100px;
+    background: var(--bg-offset);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    overflow: hidden;
+}
+
+.bookCard:hover .coverContainer {
+    border-color: #666;
+    transform: translateY(-2px);
+}
+
+.featured .coverContainer {
+    width: 140px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.coverPlaceholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-offset);
+    font-size: 1.5rem;
+    font-weight: 200;
+    color: var(--border);
+    border-radius: var(--radius-sm);
+}
+
+.featured .coverPlaceholder {
+    font-size: 3rem;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex-grow: 1;
+}
+
+.title {
+    font-size: 0.9rem;
+    margin: 0;
+    color: var(--text);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.featured .title {
+    font-size: 1.35rem;
+    line-height: 1.2;
+}
+
+.metaGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.meta {
+    color: var(--text-dim);
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0;
+}
+
+.continueBtn {
+    margin-top: 4px;
+    width: fit-content;
+    padding: 6px 12px;
+    font-size: 0.6rem;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    font-family: inherit;
+    font-weight: 600;
+    background: var(--text);
+    color: var(--bg);
+    transition: var(--transition);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.continueBtn:hover {
+    background: transparent;
+    color: var(--text);
+    transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+    .bookCard {
+        gap: 6px;
+    }
+
+    .coverContainer {
+        width: 100%;
+        max-width: 110px;
+        margin: 0 auto;
+    }
+
+    .bookCard.featured {
+        gap: 16px;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .featured .coverContainer {
+        width: 90px;
+    }
+
+    .featured .title {
+        font-size: 1.1rem;
+    }
+
+    .title {
+        font-size: 0.8rem;
+        text-align: center;
+    }
+
+    .meta {
+        font-size: 0.55rem;
+        text-align: center;
+    }
+
+    .info {
+        align-items: center;
+    }
+
+    .continueBtn {
+        width: 100%;
+        padding: 6px 4px;
+        font-size: 0.55rem;
+    }
+}
