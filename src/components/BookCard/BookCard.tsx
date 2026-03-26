@@ -16,7 +16,10 @@ export function BookCard({ book, isFeatured = false }: BookCardProps) {
 
     return (
         <div className={rootClass}>
-            <div className={styles.coverContainer}>
+            <div
+                className={styles.coverContainer}
+                onClick={() => navigate(`/reader/${book.id}`, { state: { book } })}
+            >
                 <div className={styles.coverPlaceholder}>
                     <span>{book.title.charAt(0)}</span>
                 </div>

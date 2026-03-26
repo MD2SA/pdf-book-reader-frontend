@@ -23,6 +23,7 @@
     justify-content: center;
     transition: var(--transition);
     overflow: hidden;
+    cursor: pointer;
 }
 
 .bookCard:hover .coverContainer {
