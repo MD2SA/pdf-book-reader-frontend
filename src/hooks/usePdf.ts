@@ -6,33 +6,41 @@ import worker from "pdfjs-dist/build/pdf.worker?url"
 pdfjsLib.GlobalWorkerOptions.workerSrc = worker
 
 interface UsePdfResult {
-    pdf: import("pdfjs-dist").PDFDocumentProxy | null
-    numPages: number
+    pdf: PDFDocumentProxy | null;
+    numPages: number;
+    isLoading: boolean;
 }
 
-export default function usePdf(url: string): UsePdfResult {
+export default function usePdf(data: Uint8Array | null): UsePdfResult {
     const [pdf, setPdf] = useState<PDFDocumentProxy | null>(null)
     const [numPages, setNumPages] = useState<number>(0)
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     useEffect(() => {
-        if (!url) return;
+        if (!data || data.length === 0) return;
 
         const loadPdf = async () => {
+            setIsLoading(true);
             try {
-                const loadingTask = pdfjsLib.getDocument(url)
-                const pdfDoc = await loadingTask.promise
+                const loadingTask = pdfjsLib.getDocument({
+                    data: data.slice(0)
+                });
 
+                const pdfDoc = await loadingTask.promise
                 setPdf(pdfDoc)
                 setNumPages(pdfDoc.numPages)
-            } catch (error) {
-                console.error("Error loading PDF:", error)
+            } catch (error: any) {
+                if (error?.name === 'RenderingCancelledException') return;
+                console.error("Render error:", error);
                 setPdf(null)
                 setNumPages(0)
+            } finally {
+                setIsLoading(false);
             }
         }
 
         loadPdf()
-    }, [url])
+    }, [data])
 
-    return { pdf, numPages }
+    return { pdf, numPages, isLoading }
 }
