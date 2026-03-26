@@ -7,12 +7,14 @@ export interface ReaderContextType {
     setPage: (page: number) => void;
     nextPage: () => void;
     prevPage: () => void;
+    isLoading: boolean;
 }
 
 export interface Book {
     id: number;
     title: string;
-    uri: string;
-    lastRead: string;
-    lastPage: number;
+    bookReference: string;
+    lastPageRead: number;
+    lastTimeRead: string;
+    favorite: boolean;
 }
