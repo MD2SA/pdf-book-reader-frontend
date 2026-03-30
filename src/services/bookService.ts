@@ -52,3 +52,31 @@ export async function getBookDownloadUrl(bookId: number): Promise<string> {
 
     return data.url;
 }
+export async function uploadBook(file: File): Promise<Book> {
+    if (import.meta.env.DEV) {
+        console.log("Mock Mode: Uploading book", file.name);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        const newBook: Book = {
+            id: Math.floor(Math.random() * 1000),
+            title: file.name.replace(/\.[^/.]+$/, ""),
+            bookReference: URL.createObjectURL(file), // Mock reference
+            lastPageRead: 1,
+            lastTimeRead: new Date().toISOString(),
+            favorite: false
+        };
+        fakeBooks.push(newBook);
+        return newBook;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('title', file.name.replace(/\.[^/.]+$/, ""));
+
+    const response = await api.postFormData('/books/upload', formData);
+
+    if (!response.ok) {
+        throw new Error('Failed to upload book');
+    }
+
+    return await response.json();
+}

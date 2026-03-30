@@ -1,10 +1,11 @@
 import { BookCard } from '../../components/BookCard';
 import { useBooks } from '../../hooks/useBooks';
 import { useAuth } from '../../context/AuthContext';
+import { SubmitBook } from '../../components/SubmitBook/SubmitBook';
 import styles from './Home.module.css';
 
 export default function Home() {
-    const { books, error } = useBooks();
+    const { books, error, refresh } = useBooks();
     const { user, logout } = useAuth();
 
     const featuredBook = books[0];
@@ -51,6 +52,13 @@ export default function Home() {
                         <h2 className={styles.sectionLabel}>Library Index</h2>
                     </div>
                     <div className={styles.booksGrid}>
+                        <div 
+                            className={`card ${styles.gridItem} ${styles.addBookCard}`}
+                            onClick={() => document.getElementById('book-upload-input')?.click()}
+                        >
+                            <div className={styles.addBookIcon}>+</div>
+                            <span className={styles.addBookText}>Import Book</span>
+                        </div>
                         {otherBooks.map((book) => (
                             <div key={book.id} className={`card ${styles.gridItem}`}>
                                 <BookCard book={book} />
@@ -59,6 +67,7 @@ export default function Home() {
                     </div>
                 </section>
             </main>
+            <SubmitBook onUploadSuccess={refresh} />
         </div>
     );
 }
