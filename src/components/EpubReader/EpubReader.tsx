@@ -1,5 +1,5 @@
 import { Loading } from '../Loading';
-import { EpubViewer } from '../EpubViewer/EpubViewer';
+import { EpubViewer } from '../EpubViewer';
 import { useReader } from '../ReaderContext';
 import { ReaderMenu } from '../ReaderMenu';
 import styles from './EpubReader.module.css';
