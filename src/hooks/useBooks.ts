@@ -6,6 +6,7 @@ interface UseBooksResult {
     books: Book[];
     loading: boolean;
     error: string | null;
+    refresh: () => Promise<void>;
 }
 
 export function useBooks(): UseBooksResult {
@@ -13,31 +14,23 @@ export function useBooks(): UseBooksResult {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
+    const refresh = async () => {
+        setLoading(true);
+        try {
+            const sorted = await getBooks();
+            setBooks(sorted);
+            setError(null);
+        } catch (err: any) {
+            console.error('Failed to load books:', err);
+            setError('Unable to load your library. Please try again later.');
+        } finally {
+            setLoading(false);
+        }
+    }
+
     useEffect(() => {
-        let cancelled = false;
-
-        getBooks()
-            .then((sorted) => {
-                if (!cancelled) {
-                    setBooks(sorted);
-                }
-            })
-            .catch((err: Error) => {
-                if (!cancelled) {
-                    console.error('Failed to load books:', err);
-                    setError('Unable to load your library. Please try again later.');
-                }
-            })
-            .finally(() => {
-                if (!cancelled) {
-                    setLoading(false);
-                }
-            });
-
-        return () => {
-            cancelled = true;
-        };
+        refresh();
     }, []);
 
-    return { books, loading, error };
+    return { books, loading, error, refresh };
 }

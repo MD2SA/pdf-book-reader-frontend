@@ -1,26 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../services/db';
 import { getBookDownloadUrl } from '../services/bookService';
 
 export const useBookStorage = (bookId: number) => {
     const [isDownloading, setIsDownloading] = useState(false);
-    const [bookData, setBookData] = useState<Uint8Array | null>(null);
 
     const cachedBook = useLiveQuery(() => db.books.get(bookId), [bookId]);
-
-    useEffect(() => {
-        if (cachedBook?.blob) {
-            cachedBook.blob.arrayBuffer().then(buffer => {
-                setBookData(new Uint8Array(buffer));
-            }).catch(error => {
-                console.error("Error converting blob to array buffer:", error);
-                setBookData(null);
-            });
-        } else {
-            setBookData(null);
-        }
-    }, [cachedBook?.blob]);
 
     const download = async (title: string) => {
         if (isDownloading || cachedBook) return;
@@ -37,10 +23,15 @@ export const useBookStorage = (bookId: number) => {
         }
     };
 
+    const saveBook = async (id: number, title: string, blob: Blob) => {
+        await db.books.put({ id, title, blob, cachedAt: Date.now() });
+    };
+
     return {
-        bookData,
-        isReady: !!bookData,
+        bookData: cachedBook?.blob || null,
+        isReady: !!cachedBook?.blob,
         isDownloading,
-        download
+        download,
+        saveBook
     };
 };

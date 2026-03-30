@@ -9,7 +9,9 @@ export function EpubViewer() {
     useEffect(() => {
         if (!book || !viewerRef.current) return;
 
+        let active = true;
         console.log("Rendering book to container");
+        
         const rendition = book.renderTo(viewerRef.current, {
             width: "100%",
             height: "100%",
@@ -18,12 +20,27 @@ export function EpubViewer() {
             allowScriptedContent: true,
         });
 
-        rendition.display();
-        setRendition(rendition);
+        const displayRendition = async () => {
+            try {
+                await rendition.display();
+                if (active) {
+                    setRendition(rendition);
+                }
+            } catch (err) {
+                console.error("Error displaying rendition:", err);
+            }
+        };
+
+        displayRendition();
 
         return () => {
+            active = false;
             console.log("Destroying rendition");
-            rendition.destroy();
+            try {
+                rendition.destroy();
+            } catch (err) {
+                console.debug("Ignored error during rendition destruction:", err);
+            }
             setRendition(null);
         };
     }, [book, setRendition]);

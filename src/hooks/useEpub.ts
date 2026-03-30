@@ -6,32 +6,33 @@ interface UseEpubResult {
     isLoading: boolean;
 }
 
-export default function useEpub(data: Uint8Array | null): UseEpubResult {
+export default function useEpub(data: Blob | null): UseEpubResult {
     const [book, setBook] = useState<EpubBook | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     useEffect(() => {
-        if (!data || data.length === 0) return;
+        if (!data) {
+            setBook(null);
+            return;
+        }
 
         let cancelled = false;
-        const buffer: ArrayBuffer = data.slice().buffer;
 
         const loadEpub = async () => {
             setIsLoading(true);
             try {
-                const newBook = ePub(buffer);
+                const buffer = await data.arrayBuffer();
+                if (cancelled) return;
 
-                await newBook.ready;
+                const internalBook = ePub(buffer);
+                await internalBook.ready;
 
                 if (cancelled) {
-                    newBook.destroy();
+                    internalBook.destroy();
                     return;
                 }
 
-                setBook(prev => {
-                    prev?.destroy();
-                    return newBook;
-                });
+                setBook(internalBook);
             } catch (error) {
                 if (cancelled) return;
                 console.error("Error loading EPUB:", error);
@@ -50,7 +51,10 @@ export default function useEpub(data: Uint8Array | null): UseEpubResult {
 
     useEffect(() => {
         return () => {
-            book?.destroy();
+            if (book) {
+                console.log("Destroying book instance");
+                book.destroy();
+            }
         };
     }, [book]);
 

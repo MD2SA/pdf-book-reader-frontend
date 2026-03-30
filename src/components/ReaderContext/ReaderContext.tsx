@@ -6,7 +6,7 @@ import type { Rendition } from 'epubjs';
 const ReaderContext = createContext<ReaderContextType | null>(null);
 
 interface ReaderProviderProps {
-    file: Uint8Array;
+    file: Blob;
     children: React.ReactNode;
 }
 
