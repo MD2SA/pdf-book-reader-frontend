@@ -1,6 +1,7 @@
 import { createContext, useState, useContext } from 'react';
 import type { ReaderContextType } from '../../types/book';
-import usePdf from '../../hooks/usePdf';
+import useEpub from '../../hooks/useEpub';
+import type { Rendition } from 'epubjs';
 
 const ReaderContext = createContext<ReaderContextType | null>(null);
 
@@ -10,19 +11,19 @@ interface ReaderProviderProps {
 }
 
 export function ReaderProvider({ file, children }: ReaderProviderProps) {
-    const { pdf, numPages, isLoading } = usePdf(file);
-    const [page, setPage] = useState<number>(1);
+    const { book, isLoading } = useEpub(file);
+    const [rendition, setRendition] = useState<Rendition | null>(null);
 
     const nextPage = () => {
-        setPage((p) => Math.min(p + 1, numPages));
+        rendition?.next();
     };
 
     const prevPage = () => {
-        setPage((p) => Math.max(p - 1, 1));
+        rendition?.prev();
     };
 
     return (
-        <ReaderContext.Provider value={{ pdf, numPages, page, setPage, nextPage, prevPage, isLoading }}>
+        <ReaderContext.Provider value={{ book, rendition, setRendition, nextPage, prevPage, isLoading }}>
             {children}
         </ReaderContext.Provider>
     );

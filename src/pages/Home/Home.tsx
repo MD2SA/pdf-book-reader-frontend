@@ -14,7 +14,7 @@ export default function Home() {
         <div className={`container ${styles.homeContainer} fade-in`}>
             <header className={styles.header}>
                 <div>
-                    <h1 className={styles.title}>PDF Book Reader</h1>
+                    <h1 className={styles.title}>EPUB Book Reader</h1>
                     <p className={styles.subtitle}>Digital Library System</p>
                 </div>
 

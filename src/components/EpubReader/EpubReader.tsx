@@ -1,10 +1,10 @@
 import { Loading } from '../Loading';
-import { PdfViewer } from '../PdfViewer';
+import { EpubViewer } from '../EpubViewer/EpubViewer';
 import { useReader } from '../ReaderContext';
 import { ReaderMenu } from '../ReaderMenu';
-import styles from './PdfReader.module.css';
+import styles from './EpubReader.module.css';
 
-export function PdfReader({ title }: { title: string }) {
+export function EpubReader({ title }: { title: string }) {
     const { nextPage, prevPage, isLoading } = useReader();
 
     if (isLoading) {
@@ -24,7 +24,7 @@ export function PdfReader({ title }: { title: string }) {
     return (
         <div className={styles.reader} onClick={handleNavigationClick}>
             <ReaderMenu />
-            <PdfViewer />
+            <EpubViewer />
         </div>
     );
 }

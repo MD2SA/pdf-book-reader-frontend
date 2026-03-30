@@ -1,15 +1,15 @@
 import Dexie, { type Table } from 'dexie';
-import { type CachedPDF } from '../../types/database';
+import { type CachedBook } from '../../types/database';
 
 const db = new Dexie('LibraryDB') as Dexie & {
-    pdfs: Table<
-        CachedPDF,
+    books: Table<
+        CachedBook,
         number
     >
 }
 
 db.version(1).stores({
-    pdfs: 'id, title, blob, cachedAt'
+    books: 'id, title, blob, cachedAt'
 });
 
 

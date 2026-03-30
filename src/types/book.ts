@@ -1,10 +1,9 @@
-import type { PDFDocumentProxy } from "pdfjs-dist";
+import type { Book as EpubBook, Rendition } from "epubjs";
 
 export interface ReaderContextType {
-    pdf: PDFDocumentProxy | null;
-    numPages: number;
-    page: number;
-    setPage: (page: number) => void;
+    book: EpubBook | null;
+    rendition: Rendition | null;
+    setRendition: (rendition: Rendition | null) => void;
     nextPage: () => void;
     prevPage: () => void;
     isLoading: boolean;

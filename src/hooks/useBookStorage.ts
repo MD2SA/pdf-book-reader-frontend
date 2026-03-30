@@ -5,20 +5,20 @@ import { getBookDownloadUrl } from '../services/bookService';
 
 export const useBookStorage = (bookId: number) => {
     const [isDownloading, setIsDownloading] = useState(false);
-    const [pdfData, setPdfData] = useState<Uint8Array | null>(null);
+    const [bookData, setBookData] = useState<Uint8Array | null>(null);
 
-    const cachedBook = useLiveQuery(() => db.pdfs.get(bookId), [bookId]);
+    const cachedBook = useLiveQuery(() => db.books.get(bookId), [bookId]);
 
     useEffect(() => {
         if (cachedBook?.blob) {
             cachedBook.blob.arrayBuffer().then(buffer => {
-                setPdfData(new Uint8Array(buffer));
+                setBookData(new Uint8Array(buffer));
             }).catch(error => {
                 console.error("Error converting blob to array buffer:", error);
-                setPdfData(null);
+                setBookData(null);
             });
         } else {
-            setPdfData(null);
+            setBookData(null);
         }
     }, [cachedBook?.blob]);
 
@@ -29,17 +29,17 @@ export const useBookStorage = (bookId: number) => {
             const signedUrl = await getBookDownloadUrl(bookId);
             const response = await fetch(signedUrl);
             const blob = await response.blob();
-            await db.pdfs.put({ id: bookId, title, blob, cachedAt: Date.now() });
+            await db.books.put({ id: bookId, title, blob, cachedAt: Date.now() });
         } catch (error) {
-            console.error("Error downloading PDF:", error);
+            console.error("Error downloading EPUB:", error);
         } finally {
             setIsDownloading(false);
         }
     };
 
     return {
-        pdfData,
-        isReady: !!pdfData,
+        bookData,
+        isReady: !!bookData,
         isDownloading,
         download
     };
