@@ -10,7 +10,10 @@ export function Loading({ message = "Loading...", fullScreen = false }: LoadingP
 
     return (
         <div className={containerClass}>
-            <div className={styles.spinner}></div>
+            <div className={styles.spinnerWrapper}>
+                <div className={styles.spinner}></div>
+                <div className={styles.spinnerInner}></div>
+            </div>
             {message && <p className={styles.text}>{message}</p>}
         </div>
     );

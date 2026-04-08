@@ -6,6 +6,7 @@ export interface ReaderContextType {
     setRendition: (rendition: Rendition | null) => void;
     nextPage: () => void;
     prevPage: () => void;
+    goToLocation: (location: string | number) => void;
     isLoading: boolean;
 }
 

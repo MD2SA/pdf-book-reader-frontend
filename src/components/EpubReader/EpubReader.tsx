@@ -8,7 +8,7 @@ export function EpubReader({ title }: { title: string }) {
     const { nextPage, prevPage, isLoading } = useReader();
 
     if (isLoading) {
-        return <Loading message={`Opening ${title}...`} />;
+        return <Loading message={`Opening ${title}...`} fullScreen />;
     }
 
     const handleNavigationClick = (e: React.MouseEvent) => {
